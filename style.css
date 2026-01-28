@@ -1,0 +1,515 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   GUILHERME DELMOLIN - PROFESSIONAL WEBSITE
+   Site Profissional Minimalista e Responsivo
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────
+   1. RESET & BASE STYLES
+   ───────────────────────────────────────────────────────────────────────── */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* Paleta de Cores */
+    --color-background: #F8F9FA;      /* Off-white (fundo) */
+    --color-text-primary: #2C3E50;    /* Cinza chumbo (texto principal) */
+    --color-text-secondary: #5A6C7D;  /* Cinza médio (texto secundário) */
+    --color-accent: #3498DB;          /* Azul sóbrio (destaques) */
+    --color-accent-hover: #2980B9;    /* Azul escuro (hover) */
+    --color-white: #FFFFFF;           /* Branco puro */
+    --color-border: #E1E8ED;          /* Borda clara */
+    --color-shadow: rgba(44, 62, 80, 0.08); /* Sombra suave */
+    
+    /* Tipografia */
+    --font-primary: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-weight-light: 300;
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-bold: 700;
+    
+    /* Espaçamentos */
+    --spacing-xs: 0.5rem;   /* 8px */
+    --spacing-sm: 1rem;     /* 16px */
+    --spacing-md: 1.5rem;   /* 24px */
+    --spacing-lg: 2rem;     /* 32px */
+    --spacing-xl: 3rem;     /* 48px */
+    --spacing-xxl: 4rem;    /* 64px */
+    
+    /* Tamanhos de Fonte */
+    --font-size-xs: 0.875rem;   /* 14px */
+    --font-size-sm: 1rem;       /* 16px */
+    --font-size-md: 1.125rem;   /* 18px */
+    --font-size-lg: 1.5rem;     /* 24px */
+    --font-size-xl: 2rem;       /* 32px */
+    --font-size-xxl: 2.5rem;    /* 40px */
+    
+    /* Container */
+    --container-max-width: 1200px;
+    --container-padding: var(--spacing-md);
+    
+    /* Transições */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+body {
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-regular);
+    line-height: 1.6;
+    color: var(--color-text-primary);
+    background-color: var(--color-background);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   2. TYPOGRAPHY
+   ───────────────────────────────────────────────────────────────────────── */
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: var(--font-weight-bold);
+    line-height: 1.2;
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-text-primary);
+}
+
+h1 {
+    font-size: var(--font-size-xl);
+}
+
+h2 {
+    font-size: var(--font-size-lg);
+}
+
+h3 {
+    font-size: var(--font-size-md);
+}
+
+p {
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-text-secondary);
+}
+
+a {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: var(--color-accent-hover);
+}
+
+strong {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   3. LAYOUT UTILITIES
+   ───────────────────────────────────────────────────────────────────────── */
+
+.container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+}
+
+.section {
+    padding: var(--spacing-xl) 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   4. HEADER
+   ───────────────────────────────────────────────────────────────────────── */
+
+.header {
+    background-color: var(--color-white);
+    padding: var(--spacing-xxl) 0;
+    text-align: center;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.profile-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: var(--spacing-md);
+    border: 4px solid var(--color-accent);
+    box-shadow: 0 4px 12px var(--color-shadow);
+    transition: transform var(--transition-normal);
+}
+
+.profile-photo:hover {
+    transform: scale(1.05);
+}
+
+.name {
+    font-size: var(--font-size-xxl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.subtitle {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-light);
+    color: var(--color-text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   5. NAVIGATION
+   ───────────────────────────────────────────────────────────────────────── */
+
+.nav {
+    background-color: var(--color-white);
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px var(--color-shadow);
+}
+
+.nav-list {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) 0;
+}
+
+.nav-link {
+    display: block;
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-primary);
+    border-radius: 6px;
+    transition: all var(--transition-fast);
+}
+
+.nav-link:hover {
+    background-color: var(--color-background);
+    color: var(--color-accent);
+}
+
+.nav-link.lang-switch {
+    background-color: var(--color-accent);
+    color: var(--color-white);
+    font-weight: var(--font-weight-bold);
+    padding: var(--spacing-xs) var(--spacing-md);
+}
+
+.nav-link.lang-switch:hover {
+    background-color: var(--color-accent-hover);
+    color: var(--color-white);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   6. SECTIONS
+   ───────────────────────────────────────────────────────────────────────── */
+
+.section-title {
+    font-size: var(--font-size-xl);
+    text-align: center;
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-text-primary);
+    position: relative;
+    padding-bottom: var(--spacing-sm);
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background-color: var(--color-accent);
+    border-radius: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   7. ABOUT SECTION
+   ───────────────────────────────────────────────────────────────────────── */
+
+.section-about {
+    background-color: var(--color-white);
+}
+
+.about-content {
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: var(--font-size-md);
+    line-height: 1.8;
+}
+
+.about-content p {
+    margin-bottom: var(--spacing-md);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   8. SERVICES SECTION
+   ───────────────────────────────────────────────────────────────────────── */
+
+.section-services {
+    background-color: var(--color-background);
+}
+
+.services-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.service-card {
+    background-color: var(--color-white);
+    padding: var(--spacing-lg);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px var(--color-shadow);
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+}
+
+.service-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 16px var(--color-shadow);
+}
+
+.service-title {
+    font-size: var(--font-size-lg);
+    color: var(--color-accent);
+    margin-bottom: var(--spacing-sm);
+}
+
+.service-description {
+    font-size: var(--font-size-sm);
+    line-height: 1.7;
+    color: var(--color-text-secondary);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   9. MATERIALS SECTION
+   ───────────────────────────────────────────────────────────────────────── */
+
+.section-materials {
+    background-color: var(--color-white);
+}
+
+.materials-intro {
+    text-align: center;
+    font-size: var(--font-size-md);
+    max-width: 700px;
+    margin: 0 auto var(--spacing-xl) auto;
+    color: var(--color-text-secondary);
+}
+
+.materials-list {
+    list-style: none;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.material-item {
+    background-color: var(--color-background);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    border-radius: 8px;
+    border-left: 4px solid var(--color-accent);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.material-item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px var(--color-shadow);
+}
+
+.material-link {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: var(--spacing-xs);
+}
+
+.material-link:hover {
+    color: var(--color-accent-hover);
+}
+
+.material-description {
+    display: block;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.material-access {
+    display: inline-block;
+    font-size: var(--font-size-xs);
+    padding: 4px 12px;
+    background-color: var(--color-white);
+    border-radius: 20px;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   10. FOOTER
+   ───────────────────────────────────────────────────────────────────────── */
+
+.footer {
+    background-color: var(--color-text-primary);
+    color: var(--color-white);
+    padding: var(--spacing-xl) 0;
+    text-align: center;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.footer-social {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: var(--color-white);
+    transition: all var(--transition-fast);
+}
+
+.social-link:hover {
+    background-color: var(--color-accent);
+    color: var(--color-white);
+    transform: translateY(-3px);
+}
+
+.social-link svg {
+    width: 24px;
+    height: 24px;
+}
+
+.footer-copyright {
+    font-size: var(--font-size-sm);
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   11. RESPONSIVE DESIGN - TABLET (768px+)
+   ───────────────────────────────────────────────────────────────────────── */
+
+@media (min-width: 768px) {
+    :root {
+        --font-size-xs: 0.875rem;   /* 14px */
+        --font-size-sm: 1rem;       /* 16px */
+        --font-size-md: 1.125rem;   /* 18px */
+        --font-size-lg: 1.75rem;    /* 28px */
+        --font-size-xl: 2.25rem;    /* 36px */
+        --font-size-xxl: 3rem;      /* 48px */
+    }
+    
+    .profile-photo {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .nav-list {
+        gap: var(--spacing-md);
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   12. RESPONSIVE DESIGN - DESKTOP (1024px+)
+   ───────────────────────────────────────────────────────────────────────── */
+
+@media (min-width: 1024px) {
+    :root {
+        --spacing-xl: 4rem;     /* 64px */
+        --spacing-xxl: 5rem;    /* 80px */
+    }
+    
+    .profile-photo {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .services-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .section {
+        padding: var(--spacing-xxl) 0;
+    }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   13. ACCESSIBILITY & UTILITIES
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Focus styles para navegação por teclado */
+a:focus,
+button:focus {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+}
+
+/* Remove outline para usuários de mouse */
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* Animações suaves para elementos que entram na tela */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Print styles */
+@media print {
+    .nav,
+    .footer-social {
+        display: none;
+    }
+    
+    body {
+        background-color: white;
+    }
+    
+    .section {
+        page-break-inside: avoid;
+    }
+}
