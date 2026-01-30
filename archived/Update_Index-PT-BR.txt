@@ -10,25 +10,20 @@
   <!-- SEO Multilíngue -->
   <link rel="canonical" href="https://delmoling.github.io/" />
   <link rel="alternate" hreflang="pt-BR" href="https://delmoling.github.io/" />
-  <link rel="alternate" hreflang="en" href="https://delmoling.github.io/en/index.html" />
+  <link rel="alternate" hreflang="en" href="https://delmoling.github.io/index-en.html" />
   <link rel="alternate" hreflang="x-default" href="https://delmoling.github.io/" />
-  <link rel="stylesheet" href="style-refined.css">
 </head>
 
 <body>
 
   <header>
     <nav aria-label="Menu principal">
-      <div class="nav-brand">
-        <span class="brand-name">Guilherme Delmolin</span>
-        <span class="brand-subtitle">Psicólogo | CRP 06/124581</span>
-      </div>
       <ul>
         <li><a href="#sobre">Sobre</a></li>
         <li><a href="#servicos">Serviços</a></li>
         <li><a href="#academico">Trajetória Acadêmica</a></li>
         <li><a href="#contato">Contato</a></li>
-        <li><a href="en/index.html" lang="en">EN</a></li>
+        <li><a href="index-en.html" lang="en">EN</a></li>
       </ul>
     </nav>
   </header>
@@ -37,19 +32,14 @@
 
     <!-- HERO -->
     <section id="hero">
-      <div class="hero-content">
-        <img src="assets/profile.jpg" alt="Foto de Guilherme Delmolin" class="hero-photo">
-        <div class="hero-text">
-          <h1>Psicologia, Neuropsicologia e Neurociências</h1>
-          <p>
-            Atendimento clínico, Avaliação Neuropsicológica e Pesquisa em Neurociências, Cognição e
-            Música.
-          </p>
-          <div class="hero-buttons">
-            <a href="https://wa.me/5511976797977">Agendar atendimento pelo WhatsApp</a>
-            <a href="#academico">Conhecer minha trajetória acadêmica</a>
-          </div>
-        </div>
+      <h1>Psicologia, Neuropsicologia e Neurociências</h1>
+      <p>
+        Atendimento clínico, avaliação neuropsicológica e pesquisa em cognição,
+        música e neurociência.
+      </p>
+      <div>
+        <a href="https://wa.me/5511976797977">Agendar atendimento pelo WhatsApp</a>
+        <a href="#academico">Conhecer minha trajetória acadêmica</a>
       </div>
     </section>
 
@@ -88,8 +78,8 @@
         <h4>O que é</h4>
         <p>
           Processo de investigação detalhado que busca compreender a relação entre
-          cérebro e comportamento por meio de entrevistas, observação e
-          instrumentos específicos, avaliando funções como memória, atenção,
+          cérebro e comportamento por meio de entrevistas clínicas, observação e
+          instrumentos padronizados, avaliando funções como memória, atenção,
           linguagem, funções executivas e raciocínio.
         </p>
 
@@ -103,7 +93,7 @@
 
       <article>
         <h3>Psicoterapia</h3>
-        <p><strong>Um espaço seguro para o cuidado, a transformação e o autoconhecimento.</strong></p>
+        <p><strong>Um espaço seguro para cuidado emocional, transformação e autoconhecimento.</strong></p>
 
         <h4>O que é</h4>
         <p>
@@ -113,16 +103,15 @@
 
         <h4>Como funciona</h4>
         <p>
-            Em um espaço de escuta e acolhimento, vamos trabalhar juntos para compreender
-          sua história. O objetivo é identificar o que tem impedido seu bem-estar e criar
-          estratégias práticas para as mudanças que você busca.     
+          Acolhimento da história de vida, identificação de padrões de pensamento e
+          comportamento disfuncionais e desenvolvimento de estratégias concretas
+          para mudança.
         </p>
 
         <h4>Para quem é</h4>
         <p>
-          Indicado para quem deseja cuidar de questões emocionais como ansiedade, estresse e
-          depressão, e também para quem quer se preparar melhor para os desafios da vida.
-          O processo terapêutico é um investimento em você. Saúde mental é para todos!
+          Indicada para ansiedade, depressão, estresse e desenvolvimento pessoal.
+          Saúde mental é para todos.
         </p>
       </article>
 

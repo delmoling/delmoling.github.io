@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Psychology & Neuropsychology | Guilherme Delmolin</title>
+  <meta name="description" content="Psychologist and neuropsychologist with clinical, academic, and scientific practice. Psychological services, neuropsychological assessment, supervision, and research consulting." />
+
+  <!-- SEO Multilíngue -->
+  <link rel="canonical" href="https://delmoling.github.io/index-en.html" />
+  <link rel="alternate" hreflang="en" href="https://delmoling.github.io/index-en.html" />
+  <link rel="alternate" hreflang="pt-BR" href="https://delmoling.github.io/" />
+  <link rel="alternate" hreflang="x-default" href="https://delmoling.github.io/" />
+</head>
+
+<body>
+
+  <header>
+    <nav aria-label="Main navigation">
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#academic">Academic Background</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="index.html" lang="pt-BR">PT</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+
+    <section id="hero">
+      <h1>Psychology, Neuropsychology and Neuroscience</h1>
+      <p>
+        Clinical services, neuropsychological assessment, and research in cognition,
+        music, and neuroscience.
+      </p>
+    </section>
+
+    <section id="about">
+      <h2>About me</h2>
+
+      <p>
+        I am a psychologist and neuropsychologist with clinical and academic
+        practice, working with individuals across the lifespan.
+      </p>
+
+      <p>
+        My work is grounded in scientific evidence and centered on individual
+        experience, promoting ethical and effective mental health care.
+      </p>
+
+      <p>
+        I also work as a researcher and university lecturer, integrating clinical
+        practice, research, and education.
+      </p>
+    </section>
+
+    <section id="services">
+      <h2>Services</h2>
+
+      <article>
+        <h3>Neuropsychological Assessment</h3>
+        <p>
+          Comprehensive evaluation of cognitive, emotional, and behavioral
+          functioning using standardized methods.
+        </p>
+      </article>
+
+      <article>
+        <h3>Psychotherapy</h3>
+        <p>
+          Evidence-based psychotherapy focused on emotional well-being and personal
+          development.
+        </p>
+      </article>
+
+      <article>
+        <h3>Clinical Supervision</h3>
+        <p>
+          Professional supervision in psychological and neuropsychological
+          assessment.
+        </p>
+      </article>
+
+      <article>
+        <h3>Research Consulting</h3>
+        <p>
+          Methodological and statistical support for research projects in psychology
+          and neuroscience.
+        </p>
+      </article>
+    </section>
+
+    <section id="academic">
+      <h2>Academic Background</h2>
+      <ul>
+        <li>PhD candidate in Neuroscience and Cognition – UFABC</li>
+        <li>MSc in Neuroscience and Cognition – UFABC</li>
+        <li>Specialization in Clinical Neuropsychology – UNIFESP</li>
+        <li>Specialization in Sport Psychology – UMESP</li>
+        <li>Bachelor’s degree in Psychology – UMESP</li>
+      </ul>
+    </section>
+
+    <section id="contact">
+      <h2>Contact</h2>
+      <p>Email: psico.delmolin@gmail.com</p>
+      <p>
+        <a href="https://www.linkedin.com/in/guilhermedelmolin/">LinkedIn</a>
+      </p>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>© Guilherme Delmolin – Psychology & Neuroscience</p>
+  </footer>
+
+</body>
+</html>
