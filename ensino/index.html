@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ENSINO | Guilherme Delmolin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Área ENSINO para tarefas computadorizadas e registro de dados experimentais.">
+  <link rel="stylesheet" href="../style-refined.css">
+</head>
+<body>
+  <main class="page-shell">
+    <div class="page-wrap">
+      <a class="back-link" href="../index.html">&larr; Voltar ao site principal</a>
+
+      <div class="page-header">
+        <p class="eyebrow">ENSINO USCS</p>
+        <h1>Acesso às tarefas computadorizadas</h1>
+        <p>
+          Esta área é destinada a professores e alunos da USCS. Após informar o
+          e-mail institucional, preencher os dados obrigatórios e gerar o código de participante, a tarefa ficará
+          disponível para início.
+        </p>
+        <div class="status-box warning">
+          <p><strong>Uso permitido:</strong> computador/notebook e tablet com teclado físico acoplado.</p>
+          <p>Smartphones e dispositivos sem teclado físico não devem ser usados nesta versão do protocolo.</p>
+        </div>
+      </div>
+
+      <div class="two-column-grid">
+        <section class="form-card" aria-labelledby="form-access-title">
+          <div class="status-box warning">
+            <p><strong>LGPD e uso didatico:</strong> os dados desta tarefa sao coletados exclusivamente para atividades didaticas e analise de desempenho academico no contexto do projeto ENSINO.</p>
+            <p>Ao prosseguir, voce declara estar ciente do uso educacional dos dados e da armazenagem em servidor institucional para fins de pesquisa e ensino.</p>
+          </div>
+          <h2 id="form-access-title">Acesso</h2>
+          <form id="access-form" novalidate>
+            <div class="field">
+              <label for="role">Perfil</label>
+              <select id="role" name="role" required>
+                <option value="">Selecione</option>
+                <option value="professor">Professor(a)</option>
+                <option value="aluno">Aluno(a)</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="email">E-mail institucional</label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                inputmode="email"
+                autocomplete="email"
+                placeholder="nome@online.uscs.edu.br"
+                required
+              >
+            </div>
+
+            <div class="field">
+              <label for="lastSurname">Duas primeiras letras do último sobrenome</label>
+              <input
+                id="lastSurname"
+                name="lastSurname"
+                type="text"
+                autocomplete="off"
+                maxlength="60"
+                placeholder="Ex.: Silva"
+                required
+              >
+            </div>
+
+            <div class="field">
+              <label for="birthDay">Dia do nascimento</label>
+              <input
+                id="birthDay"
+                name="birthDay"
+                type="number"
+                min="1"
+                max="31"
+                placeholder="Ex.: 5"
+                required
+              >
+            </div>
+
+            <div class="field">
+              <label for="motherName">Duas primeiras letras do Primeiro Nome da Mae</label>
+              <input
+                id="motherName"
+                name="motherName"
+                type="text"
+                autocomplete="off"
+                maxlength="60"
+                placeholder="Ex.: Rita"
+                required
+              >
+            </div>
+
+            <div class="field">
+              <label for="ageYears">Idade (anos)</label>
+              <input
+                id="ageYears"
+                name="ageYears"
+                type="number"
+                min="18"
+                max="100"
+                placeholder="Ex.: 29"
+                required
+              >
+            </div>
+
+            <div class="field">
+              <label for="schoolingYears">Anos de escolaridade</label>
+              <input
+                id="schoolingYears"
+                name="schoolingYears"
+                type="number"
+                min="1"
+                max="40"
+                placeholder="Ex.: 16"
+                required
+              >
+            </div>
+
+            <div class="field">
+              <label for="colorBlindness">Daltonismo</label>
+              <select id="colorBlindness" name="colorBlindness" required>
+                <option value="">Selecione</option>
+                <option value="nao">Não</option>
+                <option value="sim">Sim</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="motherTongue">Língua materna</label>
+              <input
+                id="motherTongue"
+                name="motherTongue"
+                type="text"
+                maxlength="60"
+                placeholder="Ex.: Português"
+                required
+              >
+            </div>
+
+            <div class="field">
+              <label for="digitalFamiliarity">Familiaridade digital (1 a 5)</label>
+              <select id="digitalFamiliarity" name="digitalFamiliarity" required>
+                <option value="">Selecione</option>
+                <option value="1">1 - Muito baixa</option>
+                <option value="2">2 - Baixa</option>
+                <option value="3">3 - Média</option>
+                <option value="4">4 - Alta</option>
+                <option value="5">5 - Muito alta</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="computerExperience">Experiência prévia com testes computadorizados (opcional)</label>
+              <input
+                id="computerExperience"
+                name="computerExperience"
+                type="text"
+                maxlength="120"
+                placeholder="Ex.: Já participei de tarefas de tempo de reação"
+              >
+            </div>
+
+            <div class="field">
+              <label for="handedness">Lateralidade (opcional)</label>
+              <select id="handedness" name="handedness">
+                <option value="">Selecione</option>
+                <option value="destro">Destro(a)</option>
+                <option value="canhoto">Canhoto(a)</option>
+                <option value="ambidestro">Ambidestro(a)</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="sensoryNotes">Condições sensoriais relevantes (opcional)</label>
+              <input
+                id="sensoryNotes"
+                name="sensoryNotes"
+                type="text"
+                maxlength="120"
+                placeholder="Ex.: Uso de óculos para leitura"
+              >
+            </div>
+
+            <div class="field checkbox-field">
+              <label>
+                <input type="checkbox" id="physicalKeyboard" name="physicalKeyboard" required>
+                Confirmo que estou usando teclado físico acoplado neste dispositivo.
+              </label>
+            </div>
+
+            <div class="inline-note">
+              <p><strong>Como montar seu ID:</strong> use as 2 primeiras letras do ultimo sobrenome + o dia do nascimento com 2 digitos + as 2 primeiras letras do primeiro nome da mae.</p>
+              <p>Exemplo: Guilherme Oliveira, nascimento no dia 17, mãe Rita = <strong>OL17RI</strong>.</p>
+            </div>
+
+            <div class="button-row">
+              <button type="submit">Validar acesso e gerar ID</button>
+              <button type="button" class="secondary-button" id="clear-session">Limpar dados locais</button>
+            </div>
+          </form>
+
+          <div id="form-status" class="status-box warning" hidden></div>
+        </section>
+
+        <aside class="result-card stack" aria-labelledby="session-title">
+          <h2 id="session-title">Sessão atual</h2>
+          <div id="session-empty" class="status-box warning">
+            <p>Nenhuma sessão ativa.</p>
+            <p>Preencha o formulário para liberar a tarefa Stroop Victoria.</p>
+          </div>
+
+          <div id="session-ready" hidden>
+            <span class="pill" id="session-role-label">Participante validado</span>
+            <ul class="data-list">
+              <li><strong>E-mail</strong><span id="session-email">-</span></li>
+              <li><strong>ID único</strong><span id="session-id">-</span></li>
+              <li><strong>Idade</strong><span id="session-age">-</span></li>
+              <li><strong>Escolaridade</strong><span id="session-schooling">-</span></li>
+              <li><strong>Data</strong><span id="session-date">-</span></li>
+            </ul>
+            <div class="status-box success">
+              <p>A identificação foi validada localmente neste navegador.</p>
+              <p>Ao concluir a tarefa, os dados serão exportados em arquivos `.csv` e `.txt` e enviados para o backend quando configurado.</p>
+            </div>
+            <div class="button-row">
+              <a class="button-link" href="stroop-victoria.html">Iniciar Stroop Victoria</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <section class="panel">
+        <p class="eyebrow">Tarefa disponível</p>
+        <h2>Stroop Victoria em 3 blocos</h2>
+        <div class="task-grid">
+          <article class="task-card">
+            <h3>Bloco 1</h3>
+            <p>24 estímulos neutros com círculos coloridos.</p>
+          </article>
+          <article class="task-card">
+            <h3>Bloco 2</h3>
+            <p>24 palavras neutras apresentadas em quatro cores.</p>
+          </article>
+          <article class="task-card">
+            <h3>Bloco 3</h3>
+            <p>24 palavras de cores apresentadas de forma incongruente para medir interferência.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel">
+        <p class="eyebrow">Persistência de dados</p>
+        <h2>Estado atual da coleta</h2>
+        <p>
+          Como o site é estático, ele não consegue gravar arquivos diretamente no
+          GitHub Pages. A implementação atual salva a sessão no navegador, exporta
+          resultados em arquivos locais e deixa um ponto pronto para integração com
+          um webhook externo.
+        </p>
+        <p class="section-cta">
+          <a class="button-link secondary" href="../docs/data-persistence.md">Ver opções de armazenamento</a>
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <script src="common.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
