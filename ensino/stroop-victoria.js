@@ -58,6 +58,8 @@
     { text: "VERMELHO", key: "k" },
     { text: "AMARELO", key: "l" }
   ];
+  const fixationDurationMs = 500;
+  const responseTimeoutMs = 3000;
 
   function shuffle(array) {
     const copy = array.slice();
@@ -145,7 +147,7 @@
       '<div class="stroop-layout"><div class="stroop-frame">',
       '<div class="stroop-keymap">', keyMapHtml(), "</div>",
       '<div class="stroop-stimulus">', renderedStimulus, "</div>",
-      '<p class="stroop-caption">Responda a cor usando S, D, K e L o mais rapido e corretamente possivel.</p>',
+      '<p class="stroop-caption">Responda a cor usando S, D, K e L o mais rapido e corretamente possivel. Tempo limite: ' + (responseTimeoutMs / 1000) + ' segundos.</p>',
       "</div></div>"
     ].join("");
   }
@@ -169,7 +171,7 @@
       type: jsPsychHtmlKeyboardResponse,
       stimulus: '<div class="stroop-layout"><div class="stroop-frame"><div class="stroop-word" style="color:#1f3f55;">+</div></div></div>',
       choices: "NO_KEYS",
-      trial_duration: 500,
+      trial_duration: fixationDurationMs,
       data: {
         task: "fixation",
         block: blockNumber
@@ -183,7 +185,7 @@
       stimulus: stimulusHtml(trial),
       choices: colorKeys,
       response_ends_trial: true,
-      trial_duration: 3000,
+      trial_duration: responseTimeoutMs,
       data: {
         task: "stroop",
         session_started_at: session.startedAt,
@@ -648,6 +650,7 @@
     "Stroop Victoria",
     [
       "<p>Voce vera estimulos em diferentes cores e deve responder a <strong>cor</strong>, nao ao significado da palavra.</p>",
+      "<p>Cada tentativa tem limite de <strong>3 segundos</strong>. Se nao houver resposta, o sistema registra omissao (timeout).</p>",
       "<p>Mapeamento das teclas:</p>",
       "<ul>",
       "<li><strong>S</strong> = Azul</li>",
@@ -655,6 +658,7 @@
       "<li><strong>K</strong> = Vermelho</li>",
       "<li><strong>L</strong> = Amarelo</li>",
       "</ul>",
+      "<p>Mantenha os dedos apoiados nas teclas S, D, K e L para responder com mais consistencia.</p>",
       "<p>Responda o mais rapido e corretamente possivel.</p>"
     ].join("")
   ));
@@ -662,7 +666,7 @@
   timeline.push(...makeBlockTimeline(
     blockOne,
     "Bloco 1 de 3",
-    "<p>Neste bloco, os estimulos sao circulos coloridos. Responda a cor apresentada.</p><p>Pressione ESPACO para iniciar.</p>"
+    "<p>Neste bloco, os estimulos sao circulos coloridos. Responda a cor apresentada.</p><p>Objetivo: estabilizar velocidade e acuracia no mapeamento de teclas.</p><p>Pressione ESPACO para iniciar.</p>"
   ));
 
   timeline.push(...makeBlockTimeline(
@@ -674,7 +678,7 @@
   timeline.push(...makeBlockTimeline(
     blockThree,
     "Bloco 3 de 3",
-    "<p>Neste bloco, voce vera palavras de cores apresentadas em cor incongruente. Ignore o significado da palavra e responda somente a cor da tinta.</p><p>Pressione ESPACO para iniciar.</p>"
+    "<p>Neste bloco, voce vera palavras de cores apresentadas em cor incongruente. Ignore o significado da palavra e responda somente a cor da tinta.</p><p>Neste bloco, o conflito tende a aumentar erros e tempo de resposta. Mantenha foco na tinta.</p><p>Pressione ESPACO para iniciar.</p>"
   ));
 
   timeline.push({

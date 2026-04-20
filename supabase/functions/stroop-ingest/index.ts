@@ -9,7 +9,7 @@ type ScorePayload = {
   cleanedTrialsForRt?: Array<Record<string, unknown>>;
 };
 
-const FIXED_PROTOCOL_VERSION = "stroop-victoria-desktop-v1-baseline";
+const FIXED_PROTOCOL_VERSION = "stroop-victoria-desktop-v1.1-instructions";
 
 declare const Deno: any;
 
@@ -199,7 +199,7 @@ Deno.serve(async (request: Request) => {
         protocol_version: protocolVersion,
         scoring_version: scoringVersion,
         schema_version: schemaVersion,
-        description: "Stroop Victoria desktop baseline"
+        description: "Stroop Victoria desktop v1.1 with instruction refinements"
       }, { onConflict: "protocol_version,scoring_version,schema_version" })
       .select("id")
       .single();

@@ -1,7 +1,7 @@
 (function () {
   const STORAGE_KEY = "ensino-session";
   const RESULT_KEY = "ensino-last-result";
-  const FIXED_PROTOCOL_VERSION = "stroop-victoria-desktop-v1-baseline";
+  const FIXED_PROTOCOL_VERSION = "stroop-victoria-desktop-v1.1-instructions";
   const CONFIG = {
     allowedDomains: {
       professor: "online.uscs.edu.br",
