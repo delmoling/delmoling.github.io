@@ -6,7 +6,7 @@
   function renderError(message) {
     host.innerHTML = [
       '<div class="stroop-layout"><div class="stroop-frame">',
-      "<h2>Nao foi possivel iniciar a tarefa</h2>",
+      "<h2>N&atilde;o foi poss&iacute;vel iniciar a tarefa</h2>",
       "<p>", message, "</p>",
       '<div class="button-row"><a class="button-link" href="index.html">Voltar para ENSINO</a></div>',
       "</div></div>"
@@ -14,12 +14,12 @@
   }
 
   if (!session) {
-    renderError("Nenhuma sessao valida foi encontrada. Volte para a pagina ENSINO, informe seus dados e tente novamente.");
+    renderError("Nenhuma sess&atilde;o v&aacute;lida foi encontrada. Volte para a p&aacute;gina ENSINO, informe seus dados e tente novamente.");
     return;
   }
 
   if (!session.physicalKeyboardConfirmed) {
-    renderError("Esta versao da tarefa exige teclado fisico acoplado. Volte a pagina ENSINO, confirme o uso de teclado e tente novamente.");
+    renderError("Esta vers&atilde;o da tarefa exige teclado f&iacute;sico acoplado. Volte &agrave; p&aacute;gina ENSINO, confirme o uso de teclado e tente novamente.");
     return;
   }
 
@@ -39,7 +39,7 @@
     typeof window.jsPsychFullscreen === "undefined"
   ) {
     const extraDetails = scriptErrors.length ? " " + scriptErrors.join(" ") : "";
-    renderError("Os arquivos do jsPsych nao foram carregados corretamente. Verifique a conexao com a internet, recarregue a pagina e teste em uma aba normal do navegador." + extraDetails);
+    renderError("Os arquivos do jsPsych n&atilde;o foram carregados corretamente. Verifique a conex&atilde;o com a internet, recarregue a p&aacute;gina e teste em uma aba normal do navegador." + extraDetails);
     return;
   }
 
@@ -78,9 +78,9 @@
       for (let repetition = 0; repetition < 6; repetition += 1) {
         trials.push({
           block: 1,
-          block_name: "Neutro - circulos coloridos",
+          block_name: "Neutro - c\u00edrculos coloridos",
           stimulus_type: "circle",
-          stimulus_label: "circulo",
+          stimulus_label: "c\u00edrculo",
           stimulus_color: keyMap[key].name,
           correct_key: key
         });
@@ -113,7 +113,7 @@
         for (let repetition = 0; repetition < 2; repetition += 1) {
           trials.push({
             block: 3,
-            block_name: "Interferencia - palavras incongruentes",
+            block_name: "Interfer\u00eancia - palavras incongruentes",
             stimulus_type: "incongruent_color_word",
             stimulus_label: word.text,
             stimulus_color: keyMap[key].name,
@@ -147,7 +147,7 @@
       '<div class="stroop-layout"><div class="stroop-frame">',
       '<div class="stroop-keymap">', keyMapHtml(), "</div>",
       '<div class="stroop-stimulus">', renderedStimulus, "</div>",
-      '<p class="stroop-caption">Responda a cor usando S, D, K e L o mais rapido e corretamente possivel. Tempo limite: ' + (responseTimeoutMs / 1000) + ' segundos.</p>',
+      '<p class="stroop-caption">Responda a cor usando S, D, K e L o mais r&aacute;pido e corretamente poss&iacute;vel. Tempo limite: ' + (responseTimeoutMs / 1000) + ' segundos.</p>',
       "</div></div>"
     ].join("");
   }
@@ -159,7 +159,7 @@
         '<div class="stroop-layout"><div class="stroop-frame">',
         "<h2>", title, "</h2>",
         bodyHtml,
-        '<p class="stroop-caption">Pressione ESPACO para continuar.</p>',
+        '<p class="stroop-caption">Pressione ESPA&Ccedil;O para continuar.</p>',
         "</div></div>"
       ].join(""),
       choices: [" "]
@@ -220,9 +220,9 @@
 
   function summarizeRows(rows) {
     const blockNames = {
-      1: "Neutro - circulos coloridos",
+      1: "Neutro - c\u00edrculos coloridos",
       2: "Controle - palavras neutras",
-      3: "Interferencia"
+      3: "Interfer\u00eancia"
     };
 
     return [1, 2, 3].map((block) => {
@@ -506,28 +506,28 @@
         return [
           '<article class="result-card">',
           "<h3>Bloco ", block.block, "</h3>",
-          "<p><strong>Acuracia:</strong> ", block.accuracy_pct.toFixed(2), "%</p>",
-          "<p><strong>RT medio:</strong> ", block.rt_mean_ms, " ms</p>",
+          "<p><strong>Acur&aacute;cia:</strong> ", block.accuracy_pct.toFixed(2), "%</p>",
+          "<p><strong>RT m&eacute;dio:</strong> ", block.rt_mean_ms, " ms</p>",
           "<p><strong>RT mediano:</strong> ", block.rt_median_ms, " ms</p>",
           "<p><strong>RT DP:</strong> ", block.rt_sd_ms, " ms</p>",
-          "<p><strong>RT medio trimado:</strong> ", block.rt_trimmed_mean_ms, " ms</p>",
-          "<p><strong>N RT valido:</strong> ", block.rt_valid_n, "</p>",
+          "<p><strong>RT m&eacute;dio trimado:</strong> ", block.rt_trimmed_mean_ms, " ms</p>",
+          "<p><strong>N RT v&aacute;lido:</strong> ", block.rt_valid_n, "</p>",
           "</article>"
         ].join("");
       }).join("");
 
       const participantMetrics = scoring.participant_metrics;
       const qualityStatus = scoring.quality.excluded_participant
-        ? `<p class="status-box error"><strong>Status de qualidade:</strong> dados excluidos para norma (${window.EnsinoApp.escapeHtml(scoring.quality.exclusion_reasons.join(", "))}).</p>`
-        : '<p class="status-box success"><strong>Status de qualidade:</strong> participante elegivel para analise normativa desta versao.</p>';
+        ? `<p class="status-box error"><strong>Status de qualidade:</strong> dados exclu&iacute;dos para norma (${window.EnsinoApp.escapeHtml(scoring.quality.exclusion_reasons.join(", "))}).</p>`
+        : '<p class="status-box success"><strong>Status de qualidade:</strong> participante eleg&iacute;vel para an&aacute;lise normativa desta vers&atilde;o.</p>';
 
       const redFlags = scoring.quality.red_flags.length
         ? `<p class="status-box warning"><strong>Red flags:</strong> ${window.EnsinoApp.escapeHtml(scoring.quality.red_flags.join(", "))}</p>`
         : "";
 
       const backendInfo = backendResult && !backendResult.skipped
-        ? '<p class="status-box success">Envio para backend concluido.</p>'
-        : '<p class="status-box warning">Backend nao configurado ou indisponivel. Os arquivos locais foram preservados.</p>';
+        ? '<p class="status-box success">Envio para backend conclu&iacute;do.</p>'
+        : '<p class="status-box warning">Backend n&atilde;o configurado ou indispon&iacute;vel. Os arquivos locais foram preservados.</p>';
 
       const normativeData = backendResult && backendResult.body && backendResult.body.normative
         ? backendResult.body.normative
@@ -538,21 +538,21 @@
         return Number.isFinite(parsed) ? parsed.toFixed(decimals) : "-";
       }
 
-      let normativeHtml = '<p class="status-box warning"><strong>Normas dinamicas:</strong> calculo de z-score, percentil e T-score sera ativado na proxima fase, apos estabilizacao do escore bruto.</p>';
+      let normativeHtml = '<p class="status-box warning"><strong>Normas din&acirc;micas:</strong> c&aacute;lculo de z-score, percentil e T-score ser&aacute; ativado na pr&oacute;xima fase, ap&oacute;s estabiliza&ccedil;&atilde;o do escore bruto.</p>';
 
       if (normativeData && normativeData.metrics) {
         const metrics = normativeData.metrics;
         const metricCards = [
-          { key: "accuracy_pct", title: "Acuracia (%)" },
-          { key: "rt_mean_ms", title: "RT medio (ms)" },
-          { key: "stroop_interference_ms", title: "Interferencia Stroop (ms)" }
+          { key: "accuracy_pct", title: "Acur&aacute;cia (%)" },
+          { key: "rt_mean_ms", title: "RT m&eacute;dio (ms)" },
+          { key: "stroop_interference_ms", title: "Interfer&ecirc;ncia Stroop (ms)" }
         ].map((descriptor) => {
           const data = metrics[descriptor.key] || {};
           return [
             '<article class="result-card">',
             "<h3>", descriptor.title, "</h3>",
             "<p><strong>Bruto:</strong> ", formatNormativeNumber(data.raw, 2), "</p>",
-            "<p><strong>Media do estrato:</strong> ", formatNormativeNumber(data.mean, 2), "</p>",
+            "<p><strong>M&eacute;dia do estrato:</strong> ", formatNormativeNumber(data.mean, 2), "</p>",
             "<p><strong>DP do estrato:</strong> ", formatNormativeNumber(data.sd, 2), "</p>",
             "<p><strong>z-score:</strong> ", formatNormativeNumber(data.z_score, 2), "</p>",
             "<p><strong>Percentil:</strong> ", formatNormativeNumber(data.percentile, 1), "</p>",
@@ -564,10 +564,10 @@
 
         normativeHtml = [
           '<article class="result-card">',
-          "<h3>Comparacao normativa dinamica</h3>",
-          "<p><strong>Faixa etaria:</strong> ", window.EnsinoApp.escapeHtml(String(normativeData.age_band || "-")), "</p>",
+          "<h3>Compara&ccedil;&atilde;o normativa din&acirc;mica</h3>",
+          "<p><strong>Faixa et&aacute;ria:</strong> ", window.EnsinoApp.escapeHtml(String(normativeData.age_band || "-")), "</p>",
           "<p><strong>Faixa de escolaridade:</strong> ", window.EnsinoApp.escapeHtml(String(normativeData.schooling_band || "-")), "</p>",
-          "<p><strong>Amostra valida no estrato:</strong> ", formatNormativeNumber(normativeData.sample_n, 0), "</p>",
+          "<p><strong>Amostra v&aacute;lida no estrato:</strong> ", formatNormativeNumber(normativeData.sample_n, 0), "</p>",
           "</article>",
           '<div class="task-grid">', metricCards, "</div>"
         ].join("");
@@ -575,39 +575,39 @@
 
       jsPsych.getDisplayElement().innerHTML = [
         '<div class="stroop-layout"><div class="stroop-frame">',
-        "<h2>Tarefa concluida</h2>",
-        "<p>Os arquivos de resultado foram gerados para download neste navegador. Se o navegador bloquear a transferencia automatica, use os links abaixo.</p>",
+        "<h2>Tarefa conclu&iacute;da</h2>",
+        "<p>Os arquivos de resultado foram gerados para download neste navegador. Se o navegador bloquear a transfer&ecirc;ncia autom&aacute;tica, use os links abaixo.</p>",
         qualityStatus,
         redFlags,
         backendInfo,
         '<article class="result-card">',
         "<h3>Desempenho bruto (participante)</h3>",
-        "<p><strong>Acuracia total:</strong> ", participantMetrics.accuracy_pct.toFixed(2), "%</p>",
+        "<p><strong>Acur&aacute;cia total:</strong> ", participantMetrics.accuracy_pct.toFixed(2), "%</p>",
         "<p><strong>Erros:</strong> ", participantMetrics.error_trials, "</p>",
-        "<p><strong>Timeouts/omissoes:</strong> ", participantMetrics.timeout_trials, " (", participantMetrics.omission_rate_pct.toFixed(2), "%)</p>",
-        "<p><strong>RT medio:</strong> ", participantMetrics.rt_mean_ms, " ms</p>",
+        "<p><strong>Timeouts/omiss&otilde;es:</strong> ", participantMetrics.timeout_trials, " (", participantMetrics.omission_rate_pct.toFixed(2), "%)</p>",
+        "<p><strong>RT m&eacute;dio:</strong> ", participantMetrics.rt_mean_ms, " ms</p>",
         "<p><strong>RT mediano:</strong> ", participantMetrics.rt_median_ms, " ms</p>",
         "<p><strong>RT DP:</strong> ", participantMetrics.rt_sd_ms, " ms</p>",
-        "<p><strong>RT medio trimado:</strong> ", participantMetrics.rt_trimmed_mean_ms, " ms</p>",
-        "<p><strong>Interferencia Stroop (B3 - B2):</strong> ", participantMetrics.stroop_interference_ms, " ms</p>",
+        "<p><strong>RT m&eacute;dio trimado:</strong> ", participantMetrics.rt_trimmed_mean_ms, " ms</p>",
+        "<p><strong>Interfer&ecirc;ncia Stroop (B3 - B2):</strong> ", participantMetrics.stroop_interference_ms, " ms</p>",
         "</article>",
-        "<h3>Metricas por bloco</h3>",
+        "<h3>M&eacute;tricas por bloco</h3>",
         '<div class="task-grid">', byBlockHtml, "</div>",
         normativeHtml,
         '<article class="result-card">',
         "<h3>Legenda das medidas</h3>",
-        "<p><strong>Acuracia total (%):</strong> proporcao de respostas corretas em todos os trials.</p>",
-        "<p><strong>RT medio (ms):</strong> media do tempo de resposta em milissegundos (acertos validos apos limpeza).</p>",
-        "<p><strong>RT mediano (ms):</strong> valor central do tempo de resposta, menos sensivel a valores extremos.</p>",
-        "<p><strong>RT DP (ms):</strong> desvio-padrao dos tempos de resposta, indicando variabilidade intraindividuo.</p>",
-        "<p><strong>RT medio trimado (ms):</strong> media com corte de extremos para robustez psicometrica.</p>",
-        "<p><strong>Interferencia Stroop (ms):</strong> diferenca entre RT medio do bloco incongruente e do bloco controle (B3 - B2).</p>",
-        "<p><strong>z-score:</strong> distancia do valor bruto em unidades de desvio-padrao no estrato normativo.</p>",
-        "<p><strong>Percentil:</strong> posicao relativa do participante no estrato (0 a 100).</p>",
+        "<p><strong>Acur&aacute;cia total (%):</strong> propor&ccedil;&atilde;o de respostas corretas em todos os trials.</p>",
+        "<p><strong>RT m&eacute;dio (ms):</strong> m&eacute;dia do tempo de resposta em milissegundos (acertos v&aacute;lidos ap&oacute;s limpeza).</p>",
+        "<p><strong>RT mediano (ms):</strong> valor central do tempo de resposta, menos sens&iacute;vel a valores extremos.</p>",
+        "<p><strong>RT DP (ms):</strong> desvio-padr&atilde;o dos tempos de resposta, indicando variabilidade intraindiv&iacute;duo.</p>",
+        "<p><strong>RT m&eacute;dio trimado (ms):</strong> m&eacute;dia com corte de extremos para robustez psicom&eacute;trica.</p>",
+        "<p><strong>Interfer&ecirc;ncia Stroop (ms):</strong> diferen&ccedil;a entre RT m&eacute;dio do bloco incongruente e do bloco controle (B3 - B2).</p>",
+        "<p><strong>z-score:</strong> dist&acirc;ncia do valor bruto em unidades de desvio-padr&atilde;o no estrato normativo.</p>",
+        "<p><strong>Percentil:</strong> posi&ccedil;&atilde;o relativa do participante no estrato (0 a 100).</p>",
         "<p><strong>T-score:</strong> escore padronizado calculado como 50 + 10 x z.</p>",
         "</article>",
         '<article class="result-card" style="text-align:left;">',
-        "<h3>Referencias bibliograficas</h3>",
+        "<h3>Refer&ecirc;ncias bibliogr&aacute;ficas</h3>",
         "<p>Stroop, J. R. (1935). Studies of interference in serial verbal reactions. Journal of Experimental Psychology, 18(6), 643-662.</p>",
         "<p>Regard, M., Potgieter, J., & Van Zomeren, A. (1982). The Victoria version of the Stroop Test.</p>",
         "<p>de Schryver, M., Hughes, J., Rosseel, Y., & De Houwer, J. (2018). Unreliable difference scores in the Stroop task? Psychological Assessment, 30(5), 691-700.</p>",
@@ -642,15 +642,15 @@
   timeline.push({
     type: jsPsychFullscreen,
     fullscreen_mode: true,
-    message: "<p>A tarefa sera apresentada em tela cheia para reduzir distracoes.</p>",
+    message: "<p>A tarefa ser&aacute; apresentada em tela cheia para reduzir distra&ccedil;&otilde;es.</p>",
     button_label: "Entrar em tela cheia"
   });
 
   timeline.push(instructionPage(
     "Stroop Victoria",
     [
-      "<p>Voce vera estimulos em diferentes cores e deve responder a <strong>cor</strong>, nao ao significado da palavra.</p>",
-      "<p>Cada tentativa tem limite de <strong>3 segundos</strong>. Se nao houver resposta, o sistema registra omissao (timeout).</p>",
+      "<p>Voc&ecirc; ver&aacute; est&iacute;mulos em diferentes cores e deve responder &agrave; <strong>cor</strong>, n&atilde;o ao significado da palavra.</p>",
+      "<p>Cada tentativa tem limite de <strong>3 segundos</strong>. Se n&atilde;o houver resposta, o sistema registra omiss&atilde;o (timeout).</p>",
       "<p>Mapeamento das teclas:</p>",
       "<ul>",
       "<li><strong>S</strong> = Azul</li>",
@@ -658,27 +658,27 @@
       "<li><strong>K</strong> = Vermelho</li>",
       "<li><strong>L</strong> = Amarelo</li>",
       "</ul>",
-      "<p>Mantenha os dedos apoiados nas teclas S, D, K e L para responder com mais consistencia.</p>",
-      "<p>Responda o mais rapido e corretamente possivel.</p>"
+      "<p>Mantenha os dedos apoiados nas teclas S, D, K e L para responder com mais consist&ecirc;ncia.</p>",
+      "<p>Responda o mais r&aacute;pido e corretamente poss&iacute;vel.</p>"
     ].join("")
   ));
 
   timeline.push(...makeBlockTimeline(
     blockOne,
     "Bloco 1 de 3",
-    "<p>Neste bloco, os estimulos sao circulos coloridos. Responda a cor apresentada.</p><p>Objetivo: estabilizar velocidade e acuracia no mapeamento de teclas.</p><p>Pressione ESPACO para iniciar.</p>"
+    "<p>Neste bloco, os est&iacute;mulos s&atilde;o c&iacute;rculos coloridos. Responda &agrave; cor apresentada.</p><p>Objetivo: estabilizar velocidade e acur&aacute;cia no mapeamento de teclas.</p><p>Pressione ESPA&Ccedil;O para iniciar.</p>"
   ));
 
   timeline.push(...makeBlockTimeline(
     blockTwo,
     "Bloco 2 de 3",
-    "<p>Neste bloco, voce vera palavras neutras em diferentes cores. Ignore a palavra e responda somente a cor.</p><p>Pressione ESPACO para iniciar.</p>"
+    "<p>Neste bloco, voc&ecirc; ver&aacute; palavras neutras em diferentes cores. Ignore a palavra e responda somente &agrave; cor.</p><p>Pressione ESPA&Ccedil;O para iniciar.</p>"
   ));
 
   timeline.push(...makeBlockTimeline(
     blockThree,
     "Bloco 3 de 3",
-    "<p>Neste bloco, voce vera palavras de cores apresentadas em cor incongruente. Ignore o significado da palavra e responda somente a cor da tinta.</p><p>Neste bloco, o conflito tende a aumentar erros e tempo de resposta. Mantenha foco na tinta.</p><p>Pressione ESPACO para iniciar.</p>"
+    "<p>Neste bloco, voc&ecirc; ver&aacute; palavras de cores apresentadas em cor incongruente. Ignore o significado da palavra e responda somente &agrave; cor da tinta.</p><p>Neste bloco, o conflito tende a aumentar erros e tempo de resposta. Mantenha foco na tinta.</p><p>Pressione ESPA&Ccedil;O para iniciar.</p>"
   ));
 
   timeline.push({
