@@ -13,7 +13,7 @@
     supabaseProjectUrl: "https://ohihzoibxjekweporhpy.supabase.co",
     supabasePublishableKey: "sb_publishable_vcZ0Mxl5MVMQajFUfW5jtQ_uC1TVc1w",
     webhookUrl: "https://ohihzoibxjekweporhpy.supabase.co/functions/v1/stroop-ingest",
-    webhookApiKey: "48d8f267a67de9631f14d3d6f6081d6a3d6f10f31642d96fbe58f7f183a9b22e"
+    webhookApiKey: "a425844cc614ced5f4c8698e8dbc449e46ca3066f4cd804378b43fbc4656b463"
   };
 
   function normalizeLetters(value) {
