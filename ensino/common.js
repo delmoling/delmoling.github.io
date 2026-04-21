@@ -227,7 +227,7 @@
     const headers = { "Content-Type": "application/json" };
     if (CONFIG.supabasePublishableKey) {
       headers.apikey = CONFIG.supabasePublishableKey;
-      headers.Authorization = "Bearer " + CONFIG.supabasePublishableKey;
+   // headers.Authorization = "Bearer " + CONFIG.supabasePublishableKey;
     }
     if (CONFIG.webhookApiKey) {
       headers["x-ingest-token"] = CONFIG.webhookApiKey;
