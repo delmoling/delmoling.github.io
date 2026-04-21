@@ -11,7 +11,7 @@
     scoringVersion: "rt-pipeline-v3-jittered",
     schemaVersion: "ensino-schema-v2",
     supabaseProjectUrl: "https://ohihzoibxjekweporhpy.supabase.co",
-    supabasePublishableKey: "sb_publishable_vcZ0Mxl5MVMQajFUfW5jtQ_uC1TVc1w",
+    supabasePublishableKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9oaWh6b2lieGpla3dlcG9yaHB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUxODExMTIsImV4cCI6MjA5MDc1NzExMn0.HTXtwD_Fh2QdvnzIBaUKeeIQ8eQeDJ7NXYkbi9NmABo",
     webhookUrl: "https://ohihzoibxjekweporhpy.supabase.co/functions/v1/stroop-ingest",
     webhookApiKey: "a425844cc614ced5f4c8698e8dbc449e46ca3066f4cd804378b43fbc4656b463"
   };
@@ -227,7 +227,7 @@
     const headers = { "Content-Type": "application/json" };
     if (CONFIG.supabasePublishableKey) {
       headers.apikey = CONFIG.supabasePublishableKey;
-   // headers.Authorization = "Bearer " + CONFIG.supabasePublishableKey;
+      headers.Authorization = "Bearer " + CONFIG.supabasePublishableKey;
     }
     if (CONFIG.webhookApiKey) {
       headers["x-ingest-token"] = CONFIG.webhookApiKey;
