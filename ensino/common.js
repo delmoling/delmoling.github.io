@@ -225,8 +225,12 @@
     }
 
     const headers = { "Content-Type": "application/json" };
+    if (CONFIG.supabasePublishableKey) {
+      headers.apikey = CONFIG.supabasePublishableKey;
+      headers.Authorization = "Bearer " + CONFIG.supabasePublishableKey;
+    }
     if (CONFIG.webhookApiKey) {
-      headers.Authorization = "Bearer " + CONFIG.webhookApiKey;
+      headers["x-ingest-token"] = CONFIG.webhookApiKey;
     }
 
     console.log("[Stroop] Payload enviado para API:", payload);

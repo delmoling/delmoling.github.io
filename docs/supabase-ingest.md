@@ -45,7 +45,12 @@ If you see that error, create `PROJECT_URL` and `SERVICE_ROLE_KEY` instead.
 
 If `INGEST_TOKEN` is set, the client must send:
 
-- `Authorization: Bearer <INGEST_TOKEN>`
+- `x-ingest-token: <INGEST_TOKEN>`
+
+When using Supabase Edge Functions with JWT verification enabled, also send:
+
+- `Authorization: Bearer <SUPABASE_ANON_KEY>`
+- `apikey: <SUPABASE_ANON_KEY>`
 
 ## Notes
 

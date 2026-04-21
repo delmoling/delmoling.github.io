@@ -29,7 +29,7 @@ type NumericMetricRow = {
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info",
+  "Access-Control-Allow-Headers": "authorization, apikey, content-type, x-client-info, x-ingest-token",
   "Access-Control-Allow-Methods": "POST, OPTIONS"
 };
 
@@ -164,8 +164,8 @@ Deno.serve(async (request: Request) => {
 
   try {
     const expectedToken = Deno.env.get("INGEST_TOKEN") || "";
-    const authHeader = request.headers.get("authorization") || "";
-    if (expectedToken && authHeader !== `Bearer ${expectedToken}`) {
+    const ingestHeader = request.headers.get("x-ingest-token") || "";
+    if (expectedToken && ingestHeader !== expectedToken) {
       return jsonResponse({ error: "Unauthorized" }, 401);
     }
 
