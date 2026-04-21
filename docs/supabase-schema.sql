@@ -24,6 +24,12 @@ create table if not exists participant_sessions (
   handedness text,
   sensory_notes text,
   physical_keyboard_confirmed boolean not null,
+  user_agent text,
+  screen_width integer,
+  screen_height integer,
+  window_inner_width integer,
+  window_inner_height integer,
+  experiment_started_at timestamptz,
   started_at timestamptz not null,
   completed_at timestamptz,
   protocol_version text not null,
@@ -42,13 +48,18 @@ create table if not exists stroop_trials (
   trial_index_in_block integer not null,
   block integer not null,
   block_name text not null,
+  is_practice boolean not null default false,
+  transition_type text,
+  post_error boolean not null default false,
   stimulus_type text not null,
   stimulus_label text not null,
   stimulus_color text not null,
   correct_key text not null,
   response_key text,
   correct integer not null,
+  correct_bool boolean,
   timed_out integer not null,
+  timed_out_bool boolean,
   rt_ms integer,
   protocol_version text not null,
   scoring_version text not null,
@@ -74,6 +85,8 @@ create table if not exists participant_metrics (
   rt_trimmed_mean_ms numeric(10,2) not null,
   rt_valid_n integer not null,
   stroop_interference_ms numeric(10,2) not null,
+  z_accuracy numeric(10,4),
+  z_interference numeric(10,4),
   excluded_participant boolean not null,
   exclusion_reasons jsonb not null default '[]'::jsonb,
   red_flags jsonb not null default '[]'::jsonb,
@@ -122,3 +135,23 @@ create table if not exists normative_stats (
 );
 
 create index if not exists idx_norms_lookup on normative_stats (protocol_version, scoring_version, age_band, schooling_band, metric_name);
+
+-- Compatibilidade: colunas adicionadas na versao v1.3
+alter table if exists participant_sessions
+  add column if not exists user_agent text,
+  add column if not exists screen_width integer,
+  add column if not exists screen_height integer,
+  add column if not exists window_inner_width integer,
+  add column if not exists window_inner_height integer,
+  add column if not exists experiment_started_at timestamptz;
+
+alter table if exists stroop_trials
+  add column if not exists is_practice boolean not null default false,
+  add column if not exists transition_type text,
+  add column if not exists post_error boolean not null default false,
+  add column if not exists correct_bool boolean,
+  add column if not exists timed_out_bool boolean;
+
+alter table if exists participant_metrics
+  add column if not exists z_accuracy numeric(10,4),
+  add column if not exists z_interference numeric(10,4);

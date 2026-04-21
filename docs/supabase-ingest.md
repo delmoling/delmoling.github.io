@@ -11,7 +11,7 @@ The frontend is currently configured to call:
 ## What it does
 
 - Accepts the JSON payload sent by `ensino/common.js`.
-- Validates protocol metadata.
+- Validates protocol metadata (aceita v1.2 e v1.3).
 - Creates a row in `participant_sessions`.
 - Inserts trial rows in `stroop_trials`.
 - Inserts participant-level metrics in `participant_metrics`.
@@ -52,6 +52,36 @@ If `INGEST_TOKEN` is set, the client must send:
 - The function is ready for deployment as a Supabase Edge Function.
 - The current frontend can already call any configured HTTPS endpoint through `CONFIG.webhookUrl` in `ensino/common.js`.
 - If you want block metrics persisted, create a `participant_block_metrics` table or remove that section from the function.
+
+## New fields (v1.3)
+
+### Session payload
+
+Optional device metadata (stored in `participant_sessions`):
+
+- `userAgent`
+- `screenWidth`
+- `screenHeight`
+- `windowInnerWidth`
+- `windowInnerHeight`
+- `experimentStartedAt`
+
+### Trial payload
+
+New columns (stored in `stroop_trials`):
+
+- `is_practice`
+- `transition_type`
+- `post_error`
+- `correct_bool`
+- `timed_out_bool`
+
+### Participant metrics
+
+Optional normative scores stored in `participant_metrics`:
+
+- `z_accuracy`
+- `z_interference`
 
 ## SQL analysis playbook (step-by-step)
 
@@ -213,3 +243,12 @@ Use these checkpoints after running the queries:
 - Very high timeout rates suggest the 3-second limit may be strict for the sample.
 - If many valid participants still show low accuracy or fast responses, review instructions and attention checks.
 - If stratum sizes are small, normative z-scores and percentiles should be interpreted with caution.
+
+## Verification checklist (v1.3)
+
+- Run 3 full sessions and confirm new fields are persisted in `stroop_trials` and `participant_metrics`.
+- Confirm ISI jitter stays between 500-1000 ms in at least 100 trials.
+- Manually recompute interference for 2 sessions and compare with stored values.
+- Simulate missing local CSV and validate backend fallback for norms.
+- Import exported CSV into JASP and verify boolean/float typing.
+- Run a query to check null rates for new columns (should be near zero outside practice trials).

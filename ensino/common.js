@@ -1,15 +1,15 @@
 (function () {
   const STORAGE_KEY = "ensino-session";
   const RESULT_KEY = "ensino-last-result";
-  const FIXED_PROTOCOL_VERSION = "stroop-victoria-desktop-v1.1-instructions";
+  const FIXED_PROTOCOL_VERSION = "stroop-victoria-desktop-v1.3-psychometrics";
   const CONFIG = {
     allowedDomains: {
       professor: "online.uscs.edu.br",
       aluno: "uscsonline.com.br"
     },
     protocolVersion: FIXED_PROTOCOL_VERSION,
-    scoringVersion: "rt-pipeline-v1",
-    schemaVersion: "ensino-schema-v1",
+    scoringVersion: "rt-pipeline-v3-jittered",
+    schemaVersion: "ensino-schema-v2",
     supabaseProjectUrl: "https://ohihzoibxjekweporhpy.supabase.co",
     supabasePublishableKey: "sb_publishable_vcZ0Mxl5MVMQajFUfW5jtQ_uC1TVc1w",
     webhookUrl: "https://ohihzoibxjekweporhpy.supabase.co/functions/v1/stroop-ingest",
@@ -161,15 +161,27 @@
       "color_blindness",
       "mother_tongue",
       "digital_familiarity",
+      "user_agent",
+      "screen_width",
+      "screen_height",
+      "window_inner_width",
+      "window_inner_height",
+      "experiment_started_at",
       "block",
       "block_name",
       "trial_index_in_block",
+      "is_practice",
+      "transition_type",
+      "post_error",
       "stimulus_type",
       "stimulus_label",
       "stimulus_color",
       "correct_key",
       "response_key",
       "correct",
+      "correct_bool",
+      "timed_out",
+      "timed_out_bool",
       "rt_ms"
     ];
 

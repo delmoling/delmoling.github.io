@@ -9,14 +9,21 @@ type ScorePayload = {
   cleanedTrialsForRt?: Array<Record<string, unknown>>;
 };
 
-const FIXED_PROTOCOL_VERSION = "stroop-victoria-desktop-v1.1-instructions";
+const ALLOWED_PROTOCOL_VERSIONS = new Set([
+  "stroop-victoria-desktop-v1.2-psychometrics",
+  "stroop-victoria-desktop-v1.3-psychometrics"
+]);
+
+const PROTOCOL_DESCRIPTIONS: Record<string, string> = {
+  "stroop-victoria-desktop-v1.2-psychometrics": "Stroop Victoria desktop v1.2 with jitter, metadata, and psychometric refinements",
+  "stroop-victoria-desktop-v1.3-psychometrics": "Stroop Victoria desktop v1.3 with practice block, Gratton metadata, and fixed RT window"
+};
 
 declare const Deno: any;
 
 type NumericMetricRow = {
   session_id: string;
   accuracy_pct: number;
-  rt_mean_ms: number;
   stroop_interference_ms: number;
 };
 
@@ -141,6 +148,11 @@ function getNumeric(value: unknown): number {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
+function toOptionalNumber(value: unknown): number | null {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 Deno.serve(async (request: Request) => {
   if (request.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -177,10 +189,10 @@ Deno.serve(async (request: Request) => {
       return jsonResponse({ error: "Missing protocol metadata" }, 400);
     }
 
-    if (protocolVersion !== FIXED_PROTOCOL_VERSION) {
+    if (!ALLOWED_PROTOCOL_VERSIONS.has(protocolVersion)) {
       return jsonResponse({
         error: "Protocol version mismatch",
-        expected: FIXED_PROTOCOL_VERSION,
+        expected: Array.from(ALLOWED_PROTOCOL_VERSIONS).join(", "),
         received: protocolVersion
       }, 400);
     }
@@ -199,7 +211,7 @@ Deno.serve(async (request: Request) => {
         protocol_version: protocolVersion,
         scoring_version: scoringVersion,
         schema_version: schemaVersion,
-        description: "Stroop Victoria desktop v1.1 with instruction refinements"
+        description: PROTOCOL_DESCRIPTIONS[protocolVersion] || "Stroop Victoria desktop protocol"
       }, { onConflict: "protocol_version,scoring_version,schema_version" })
       .select("id")
       .single();
@@ -221,6 +233,12 @@ Deno.serve(async (request: Request) => {
       handedness: normalizeText(session.handedness),
       sensory_notes: normalizeText(session.sensoryNotes),
       physical_keyboard_confirmed: Boolean(session.physicalKeyboardConfirmed),
+      user_agent: normalizeText(session.userAgent || session.user_agent),
+      screen_width: toInteger(session.screenWidth ?? session.screen_width),
+      screen_height: toInteger(session.screenHeight ?? session.screen_height),
+      window_inner_width: toInteger(session.windowInnerWidth ?? session.window_inner_width),
+      window_inner_height: toInteger(session.windowInnerHeight ?? session.window_inner_height),
+      experiment_started_at: normalizeText(session.experimentStartedAt || session.experiment_started_at),
       started_at: normalizeText(session.startedAt),
       completed_at: completedAt,
       protocol_version: protocolVersion,
@@ -248,13 +266,18 @@ Deno.serve(async (request: Request) => {
       trial_index_in_block: toInteger(trial.trial_index_in_block) || 0,
       block: toInteger(trial.block) || 0,
       block_name: normalizeText(trial.block_name),
+      is_practice: Boolean(trial.is_practice),
+      transition_type: normalizeText(trial.transition_type),
+      post_error: Boolean(trial.post_error),
       stimulus_type: normalizeText(trial.stimulus_type),
       stimulus_label: normalizeText(trial.stimulus_label),
       stimulus_color: normalizeText(trial.stimulus_color),
       correct_key: normalizeText(trial.correct_key),
       response_key: normalizeText(trial.response_key),
       correct: Number(trial.correct) || 0,
+      correct_bool: Boolean(trial.correct_bool),
       timed_out: Number(trial.timed_out) || 0,
+      timed_out_bool: Boolean(trial.timed_out_bool),
       rt_ms: trial.rt_ms === "" || trial.rt_ms == null ? null : toInteger(trial.rt_ms),
       protocol_version: protocolVersion,
       scoring_version: scoringVersion,
@@ -270,6 +293,8 @@ Deno.serve(async (request: Request) => {
 
     const participantMetrics = payload.participantMetrics || {};
     const quality = payload.quality || {};
+    const payloadZAccuracy = toOptionalNumber(participantMetrics.z_accuracy);
+    const payloadZInterference = toOptionalNumber(participantMetrics.z_interference);
 
     const metricsInsert = await supabase
       .from("participant_metrics")
@@ -287,6 +312,8 @@ Deno.serve(async (request: Request) => {
         rt_trimmed_mean_ms: Number(participantMetrics.rt_trimmed_mean_ms) || 0,
         rt_valid_n: toInteger(participantMetrics.rt_valid_n) || 0,
         stroop_interference_ms: Number(participantMetrics.stroop_interference_ms) || 0,
+        z_accuracy: payloadZAccuracy,
+        z_interference: payloadZInterference,
         excluded_participant: Boolean(quality.excluded_participant),
         exclusion_reasons: Array.isArray(quality.exclusion_reasons) ? quality.exclusion_reasons : [],
         red_flags: Array.isArray(quality.red_flags) ? quality.red_flags : [],
@@ -336,7 +363,7 @@ Deno.serve(async (request: Request) => {
     if (!Boolean(quality.excluded_participant) && participantAgeBand !== "unknown" && participantSchoolingBand !== "unknown") {
       const metricsQuery = await supabase
         .from("participant_metrics")
-        .select("session_id, accuracy_pct, rt_mean_ms, stroop_interference_ms")
+        .select("session_id, accuracy_pct, stroop_interference_ms")
         .eq("protocol_version", protocolVersion)
         .eq("scoring_version", scoringVersion)
         .eq("excluded_participant", false);
@@ -374,11 +401,9 @@ Deno.serve(async (request: Request) => {
         });
 
         const accuracyValues = stratumRows.map((row) => getNumeric(row.accuracy_pct));
-        const rtMeanValues = stratumRows.map((row) => getNumeric(row.rt_mean_ms));
         const interferenceValues = stratumRows.map((row) => getNumeric(row.stroop_interference_ms));
 
         const participantAccuracy = getNumeric(participantMetrics.accuracy_pct);
-        const participantRtMean = getNumeric(participantMetrics.rt_mean_ms);
         const participantInterference = getNumeric(participantMetrics.stroop_interference_ms);
 
         const metricDescriptors = [
@@ -386,11 +411,6 @@ Deno.serve(async (request: Request) => {
             name: "accuracy_pct",
             values: accuracyValues,
             raw: participantAccuracy
-          },
-          {
-            name: "rt_mean_ms",
-            values: rtMeanValues,
-            raw: participantRtMean
           },
           {
             name: "stroop_interference_ms",
@@ -406,18 +426,18 @@ Deno.serve(async (request: Request) => {
           const n = descriptor.values.length;
           const m = mean(descriptor.values);
           const sd = standardDeviation(descriptor.values);
-          const z = sd > 0 ? (descriptor.raw - m) / sd : 0;
-          const percentile = percentileRank(descriptor.values, descriptor.raw);
-          const tScore = 50 + (10 * z);
+          const z = sd > 0 ? (descriptor.raw - m) / sd : null;
+          const percentile = sd > 0 ? percentileRank(descriptor.values, descriptor.raw) : null;
+          const tScore = z == null ? null : 50 + (10 * z);
 
           normativeMetrics[descriptor.name] = {
             raw: Number(descriptor.raw.toFixed(4)),
             n,
             mean: Number(m.toFixed(4)),
             sd: Number(sd.toFixed(4)),
-            z_score: Number(z.toFixed(4)),
-            percentile: Number(percentile.toFixed(2)),
-            t_score: Number(tScore.toFixed(2))
+            z_score: z == null ? null : Number(z.toFixed(4)),
+            percentile: percentile == null ? null : Number(percentile.toFixed(2)),
+            t_score: tScore == null ? null : Number(tScore.toFixed(2))
           };
 
           normativeUpsertRows.push({
@@ -442,6 +462,32 @@ Deno.serve(async (request: Request) => {
 
           if (normUpsert.error) {
             throw normUpsert.error;
+          }
+        }
+
+        const computedZAccuracy = normativeMetrics.accuracy_pct
+          ? (normativeMetrics.accuracy_pct as { z_score?: number | null }).z_score ?? null
+          : null;
+        const computedZInterference = normativeMetrics.stroop_interference_ms
+          ? (normativeMetrics.stroop_interference_ms as { z_score?: number | null }).z_score ?? null
+          : null;
+
+        if (payloadZAccuracy == null || payloadZInterference == null) {
+          const updatePayload: Record<string, number | null> = {};
+          if (payloadZAccuracy == null) {
+            updatePayload.z_accuracy = computedZAccuracy;
+          }
+          if (payloadZInterference == null) {
+            updatePayload.z_interference = computedZInterference;
+          }
+          if (Object.keys(updatePayload).length) {
+            const metricsUpdate = await supabase
+              .from("participant_metrics")
+              .update(updatePayload)
+              .eq("session_id", sessionId);
+            if (metricsUpdate.error) {
+              throw metricsUpdate.error;
+            }
           }
         }
 

@@ -60,6 +60,160 @@
   ];
   const fixationDurationMs = 500;
   const responseTimeoutMs = 3000;
+  const isiMinMs = 500;
+  const isiMaxMs = 1000;
+  const practiceRepetitionsPerColor = 2;
+  const experimentStartedAt = window.EnsinoApp.nowIso();
+  const deviceMeta = {
+    user_agent: navigator.userAgent || "",
+    screen_width: window.screen && window.screen.width ? window.screen.width : 0,
+    screen_height: window.screen && window.screen.height ? window.screen.height : 0,
+    window_inner_width: window.innerWidth || 0,
+    window_inner_height: window.innerHeight || 0,
+    experiment_started_at: experimentStartedAt
+  };
+
+  function randomIntInclusive(minValue, maxValue) {
+    return Math.floor(Math.random() * (maxValue - minValue + 1)) + minValue;
+  }
+
+  function getConditionLabel(trial) {
+    return trial.stimulus_type === "incongruent_color_word" ? "I" : "C";
+  }
+
+  function buildTransitionType(previousCondition, currentCondition, startToken) {
+    if (!previousCondition) {
+      return (startToken || "START") + "->" + currentCondition;
+    }
+    return previousCondition + "->" + currentCondition;
+  }
+
+  function ageBand(ageYears) {
+    const age = Number(ageYears);
+    if (!Number.isFinite(age) || age < 18) {
+      return "unknown";
+    }
+    if (age <= 24) {
+      return "18-24";
+    }
+    if (age <= 34) {
+      return "25-34";
+    }
+    if (age <= 44) {
+      return "35-44";
+    }
+    if (age <= 54) {
+      return "45-54";
+    }
+    return "55+";
+  }
+
+  function schoolingBand(schoolingYears) {
+    const years = Number(schoolingYears);
+    if (!Number.isFinite(years) || years < 1) {
+      return "unknown";
+    }
+    if (years <= 11) {
+      return "ate-11";
+    }
+    if (years <= 15) {
+      return "12-15";
+    }
+    return "16+";
+  }
+
+  function parseNormativeCsv(text) {
+    const lines = String(text || "").trim().split(/\r?\n/);
+    if (lines.length < 2) {
+      return [];
+    }
+
+    const headers = lines[0].split(",").map((item) => item.trim());
+    return lines.slice(1).map((line) => {
+      const values = line.split(",");
+      const row = {};
+      headers.forEach((header, index) => {
+        row[header] = String(values[index] || "").trim();
+      });
+      return row;
+    });
+  }
+
+  async function loadLocalNormativeRows() {
+    try {
+      const response = await fetch("../ANALISE-PILOTO-STROOP-SUPABASE/normative_stats_rows.csv", {
+        cache: "no-store"
+      });
+      if (!response.ok) {
+        return [];
+      }
+      const content = await response.text();
+      return parseNormativeCsv(content);
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function buildLocalNormativeFeedback(normRows, participantMetrics) {
+    if (!Array.isArray(normRows) || !normRows.length) {
+      return null;
+    }
+
+    const participantAgeBand = ageBand(session.ageYears);
+    const participantSchoolingBand = schoolingBand(session.schoolingYears);
+    const protocolVersion = window.EnsinoApp.config.protocolVersion;
+    const scoringVersion = window.EnsinoApp.config.scoringVersion;
+
+    const rowsForStratum = normRows.filter((row) => {
+      return row.protocol_version === protocolVersion
+        && row.scoring_version === scoringVersion
+        && row.age_band === participantAgeBand
+        && row.schooling_band === participantSchoolingBand;
+    });
+
+    if (!rowsForStratum.length) {
+      return null;
+    }
+
+    function metricEntry(metricName, rawValue) {
+      const row = rowsForStratum.find((item) => item.metric_name === metricName);
+      if (!row) {
+        return null;
+      }
+      const meanValue = Number(row.mean);
+      const sdValue = Number(row.sd);
+      const raw = Number(rawValue);
+      const zScore = sdValue > 0 ? (raw - meanValue) / sdValue : null;
+      const tScore = zScore == null ? null : (50 + (10 * zScore));
+      return {
+        raw: Number.isFinite(raw) ? Number(raw.toFixed(4)) : null,
+        n: Number(row.n) || 0,
+        mean: Number.isFinite(meanValue) ? Number(meanValue.toFixed(4)) : null,
+        sd: Number.isFinite(sdValue) ? Number(sdValue.toFixed(4)) : null,
+        z_score: zScore == null ? null : Number(zScore.toFixed(4)),
+        percentile: null,
+        t_score: tScore == null ? null : Number(tScore.toFixed(2))
+      };
+    }
+
+    const accuracyMetric = metricEntry("accuracy_pct", participantMetrics.accuracy_pct);
+    const interferenceMetric = metricEntry("stroop_interference_ms", participantMetrics.stroop_interference_ms);
+
+    if (!accuracyMetric && !interferenceMetric) {
+      return null;
+    }
+
+    return {
+      source: "local_csv",
+      age_band: participantAgeBand,
+      schooling_band: participantSchoolingBand,
+      sample_n: Math.max(accuracyMetric ? accuracyMetric.n : 0, interferenceMetric ? interferenceMetric.n : 0),
+      metrics: {
+        accuracy_pct: accuracyMetric,
+        stroop_interference_ms: interferenceMetric
+      }
+    };
+  }
 
   function shuffle(array) {
     const copy = array.slice();
@@ -79,6 +233,23 @@
         trials.push({
           block: 1,
           block_name: "Neutro - c\u00edrculos coloridos",
+          stimulus_type: "circle",
+          stimulus_label: "c\u00edrculo",
+          stimulus_color: keyMap[key].name,
+          correct_key: key
+        });
+      }
+    });
+    return shuffle(trials);
+  }
+
+  function createPracticeTrials() {
+    const trials = [];
+    colorKeys.forEach((key) => {
+      for (let repetition = 0; repetition < practiceRepetitionsPerColor; repetition += 1) {
+        trials.push({
+          block: 0,
+          block_name: "Pr&aacute;tica",
           stimulus_type: "circle",
           stimulus_label: "c\u00edrculo",
           stimulus_color: keyMap[key].name,
@@ -147,7 +318,6 @@
       '<div class="stroop-layout"><div class="stroop-frame">',
       '<div class="stroop-keymap">', keyMapHtml(), "</div>",
       '<div class="stroop-stimulus">', renderedStimulus, "</div>",
-      '<p class="stroop-caption">Responda a cor usando S, D, K e L o mais r&aacute;pido e corretamente poss&iacute;vel. Tempo limite: ' + (responseTimeoutMs / 1000) + ' segundos.</p>',
       "</div></div>"
     ].join("");
   }
@@ -179,15 +349,20 @@
     };
   }
 
-  function experimentTrial(trial, indexInBlock) {
+  function experimentTrial(trial, indexInBlock, options) {
+    const trialOptions = options || {};
     return {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: stimulusHtml(trial),
       choices: colorKeys,
       response_ends_trial: true,
       trial_duration: responseTimeoutMs,
+      post_trial_gap: randomIntInclusive(isiMinMs, isiMaxMs),
       data: {
         task: "stroop",
+        is_practice: Boolean(trialOptions.isPractice),
+        transition_type: trialOptions.transitionType || "START->NA",
+        post_error: false,
         session_started_at: session.startedAt,
         role: session.role,
         email: session.email,
@@ -204,16 +379,35 @@
         data.response_key = data.response || "";
         data.correct = data.response === trial.correct_key ? 1 : 0;
         data.timed_out = data.response == null ? 1 : 0;
+        data.correct_bool = Number(data.correct) === 1;
+        data.timed_out_bool = Number(data.timed_out) === 1;
         data.rt_ms = data.rt == null ? "" : Math.round(data.rt);
+        data.post_error = Boolean(window.__stroopLastWasError || false);
+        window.__stroopLastWasError = Number(data.correct) === 0;
       }
     };
   }
 
-  function makeBlockTimeline(blockTrials, introTitle, introBody) {
+  function makeBlockTimeline(blockTrials, introTitle, introBody, options) {
+    const timelineOptions = options || {};
     const timeline = [instructionPage(introTitle, introBody)];
+    const startToken = timelineOptions.isPractice ? "PRACTICE_START" : "BLOCK_START";
+    let previousCondition = null;
+    timeline.push({
+      type: jsPsychCallFunction,
+      func: function () {
+        window.__stroopLastWasError = false;
+      }
+    });
     blockTrials.forEach((trial, index) => {
+      const currentCondition = getConditionLabel(trial);
+      const transitionType = buildTransitionType(previousCondition, currentCondition, startToken);
+      previousCondition = currentCondition;
       timeline.push(fixationTrial(trial.block));
-      timeline.push(experimentTrial(trial, index));
+      timeline.push(experimentTrial(trial, index, {
+        isPractice: Boolean(timelineOptions.isPractice),
+        transitionType
+      }));
     });
     return timeline;
   }
@@ -292,7 +486,7 @@
       mean: Math.round(meanValue),
       median: Math.round(medianValue),
       sd: Math.round(sdValue),
-      trimmedMean: Math.round(trimmedMean(values, 0.1))
+      trimmedMean: Math.round(trimmedMean(values, 0))
     };
   }
 
@@ -338,31 +532,31 @@
       minMeanRtMs: 300,
       maxMeanRtMs: 3000,
       minValidRtMs: 200,
-      maxValidRtMs: 4000,
+      maxValidRtMs: 2500,
       maxFastRtRatio: 0.1
     };
 
-    const totalTrials = trialRows.length;
-    const correctTrials = trialRows.reduce((sum, row) => sum + Number(row.correct), 0);
-    const timeoutTrials = trialRows.reduce((sum, row) => sum + Number(row.timed_out), 0);
-    const errorTrials = trialRows.reduce((sum, row) => sum + (Number(row.correct) === 0 && Number(row.timed_out) === 0 ? 1 : 0), 0);
+    const analysisRows = trialRows.filter((row) => !row.is_practice);
+    const totalTrials = analysisRows.length;
+    const correctTrials = analysisRows.reduce((sum, row) => sum + Number(row.correct), 0);
+    const timeoutTrials = analysisRows.reduce((sum, row) => sum + Number(row.timed_out), 0);
+    const errorTrials = analysisRows.reduce((sum, row) => sum + (Number(row.correct) === 0 && Number(row.timed_out) === 0 ? 1 : 0), 0);
     const accuracyPct = totalTrials ? (correctTrials / totalTrials) * 100 : 0;
 
-    const fastRtCount = trialRows.filter((row) => Number(row.rt_ms) > 0 && Number(row.rt_ms) < thresholds.minValidRtMs).length;
-    const fastRtRatio = totalTrials ? fastRtCount / totalTrials : 0;
+    const correctRtRows = analysisRows.filter((row) => Number(row.correct) === 1 && Number(row.rt_ms) > 0);
+    const fastRtCount = correctRtRows.filter((row) => Number(row.rt_ms) < thresholds.minValidRtMs).length;
+    const fastRtRatio = correctRtRows.length ? fastRtCount / correctRtRows.length : 0;
 
-    const step1Rows = trialRows.filter((row) => {
+    const validRtRows = correctRtRows.filter((row) => {
       const rt = Number(row.rt_ms);
-      return Number(row.correct) === 1 && rt >= thresholds.minValidRtMs && rt <= thresholds.maxValidRtMs;
+      return rt >= thresholds.minValidRtMs && rt <= thresholds.maxValidRtMs;
     });
 
-    const step1Stats = calculateRtStats(step1Rows);
-    const step3Rows = removeIntraParticipantOutliers(step1Rows);
-    const finalRtStats = calculateRtStats(step3Rows);
+    const finalRtStats = calculateRtStats(validRtRows);
 
     const byBlock = [1, 2, 3].map((block) => {
-      const blockRows = trialRows.filter((row) => Number(row.block) === block);
-      const blockRtRows = step3Rows.filter((row) => Number(row.block) === block);
+      const blockRows = analysisRows.filter((row) => Number(row.block) === block);
+      const blockRtRows = validRtRows.filter((row) => Number(row.block) === block);
       const blockAccuracy = blockRows.length
         ? (blockRows.reduce((sum, row) => sum + Number(row.correct), 0) / blockRows.length) * 100
         : 0;
@@ -409,8 +603,9 @@
         excluded_participant: exclusionReasons.length > 0,
         exclusion_reasons: exclusionReasons,
         red_flags: redFlags,
-        removed_trials_step1: totalTrials - step1Rows.length,
-        removed_trials_step3: step1Rows.length - step3Rows.length,
+        removed_trials_practice: trialRows.length - analysisRows.length,
+        removed_trials_incorrect_or_timeout: analysisRows.length - correctRtRows.length,
+        removed_trials_rt_window: correctRtRows.length - validRtRows.length,
         fast_rt_ratio_pct: Number((fastRtRatio * 100).toFixed(2))
       },
       participant_metrics: {
@@ -425,11 +620,13 @@
         rt_sd_ms: finalRtStats.sd,
         rt_trimmed_mean_ms: finalRtStats.trimmedMean,
         rt_valid_n: finalRtStats.count,
-        stroop_interference_ms: stroopInterferenceMs
+        stroop_interference_ms: stroopInterferenceMs,
+        z_accuracy: null,
+        z_interference: null
       },
       by_block: byBlock,
-      cleaned_rows_for_rt: step3Rows,
-      pre_outlier_rt_stats: step1Stats
+      cleaned_rows_for_rt: validRtRows,
+      pre_outlier_rt_stats: finalRtStats
     };
   }
 
@@ -451,9 +648,18 @@
         color_blindness: session.colorBlindness,
         mother_tongue: session.motherTongue,
         digital_familiarity: session.digitalFamiliarity,
+        user_agent: row.user_agent,
+        screen_width: row.screen_width,
+        screen_height: row.screen_height,
+        window_inner_width: row.window_inner_width,
+        window_inner_height: row.window_inner_height,
+        experiment_started_at: row.experiment_started_at,
         block: row.block,
         block_name: row.block_name,
         trial_index_in_block: row.trial_index_in_block,
+        is_practice: Boolean(row.is_practice),
+        transition_type: row.transition_type,
+        post_error: Boolean(row.post_error),
         stimulus_type: row.stimulus_type,
         stimulus_label: row.stimulus_label,
         stimulus_color: row.stimulus_color,
@@ -461,10 +667,22 @@
         response_key: row.response_key,
         correct: row.correct,
         timed_out: row.timed_out,
+        correct_bool: Boolean(row.correct_bool),
+        timed_out_bool: Boolean(row.timed_out_bool),
         rt_ms: row.rt_ms
       }));
 
       const scoring = buildScoring(trialRows);
+      const localNormRows = await loadLocalNormativeRows();
+      const localNormative = buildLocalNormativeFeedback(localNormRows, scoring.participant_metrics);
+      if (localNormative && localNormative.metrics) {
+        scoring.participant_metrics.z_accuracy = localNormative.metrics.accuracy_pct
+          ? localNormative.metrics.accuracy_pct.z_score
+          : null;
+        scoring.participant_metrics.z_interference = localNormative.metrics.stroop_interference_ms
+          ? localNormative.metrics.stroop_interference_ms.z_score
+          : null;
+      }
 
       const summary = {
         session,
@@ -491,12 +709,39 @@
 
       let backendResult = null;
       try {
+        const sessionPayload = {
+          protocolVersion: session.protocolVersion,
+          scoringVersion: session.scoringVersion,
+          schemaVersion: session.schemaVersion,
+          role: session.role,
+          email: session.email,
+          participantId: session.participantId,
+          ageYears: session.ageYears,
+          schoolingYears: session.schoolingYears,
+          colorBlindness: session.colorBlindness,
+          motherTongue: session.motherTongue,
+          digitalFamiliarity: session.digitalFamiliarity,
+          computerExperience: session.computerExperience,
+          handedness: session.handedness,
+          sensoryNotes: session.sensoryNotes,
+          physicalKeyboardConfirmed: session.physicalKeyboardConfirmed,
+          startedAt: session.startedAt,
+          experimentStartedAt: experimentStartedAt,
+          userAgent: deviceMeta.user_agent,
+          screenWidth: deviceMeta.screen_width,
+          screenHeight: deviceMeta.screen_height,
+          windowInnerWidth: deviceMeta.window_inner_width,
+          windowInnerHeight: deviceMeta.window_inner_height
+        };
+
         backendResult = await window.EnsinoApp.postResults({
-          session,
+          session: sessionPayload,
+          completedAt,
           participantMetrics: scoring.participant_metrics,
           blockMetrics: scoring.by_block,
           quality: scoring.quality,
-          trials: trialRows
+          trials: trialRows,
+          cleanedTrialsForRt: scoring.cleaned_rows_for_rt
         });
       } catch (error) {
         console.error("[Stroop] Falha no envio final para Edge Function:", error);
@@ -529,22 +774,28 @@
         ? '<p class="status-box success">Envio para backend conclu&iacute;do.</p>'
         : '<p class="status-box warning">Backend n&atilde;o configurado ou indispon&iacute;vel. Os arquivos locais foram preservados.</p>';
 
-      const normativeData = backendResult && backendResult.body && backendResult.body.normative
+      const normativeData = localNormative || (backendResult && backendResult.body && backendResult.body.normative
         ? backendResult.body.normative
-        : null;
+        : null);
+
+      if (normativeData && normativeData.metrics) {
+        const normAccuracy = normativeData.metrics.accuracy_pct || {};
+        const normInterference = normativeData.metrics.stroop_interference_ms || {};
+        scoring.participant_metrics.z_accuracy = normAccuracy.z_score ?? null;
+        scoring.participant_metrics.z_interference = normInterference.z_score ?? null;
+      }
 
       function formatNormativeNumber(value, decimals) {
         const parsed = Number(value);
         return Number.isFinite(parsed) ? parsed.toFixed(decimals) : "-";
       }
 
-      let normativeHtml = '<p class="status-box warning"><strong>Normas din&acirc;micas:</strong> c&aacute;lculo de z-score, percentil e T-score ser&aacute; ativado na pr&oacute;xima fase, ap&oacute;s estabiliza&ccedil;&atilde;o do escore bruto.</p>';
+      let normativeHtml = '<p class="status-box warning"><strong>Normas din&acirc;micas:</strong> indispon&iacute;veis para este estrato ou vers&atilde;o (sem CSV local ou retorno do backend).</p>';
 
       if (normativeData && normativeData.metrics) {
         const metrics = normativeData.metrics;
         const metricCards = [
           { key: "accuracy_pct", title: "Acur&aacute;cia (%)" },
-          { key: "rt_mean_ms", title: "RT m&eacute;dio (ms)" },
           { key: "stroop_interference_ms", title: "Interfer&ecirc;ncia Stroop (ms)" }
         ].map((descriptor) => {
           const data = metrics[descriptor.key] || {};
@@ -568,6 +819,7 @@
           "<p><strong>Faixa et&aacute;ria:</strong> ", window.EnsinoApp.escapeHtml(String(normativeData.age_band || "-")), "</p>",
           "<p><strong>Faixa de escolaridade:</strong> ", window.EnsinoApp.escapeHtml(String(normativeData.schooling_band || "-")), "</p>",
           "<p><strong>Amostra v&aacute;lida no estrato:</strong> ", formatNormativeNumber(normativeData.sample_n, 0), "</p>",
+          "<p><strong>Fonte:</strong> ", window.EnsinoApp.escapeHtml(String(normativeData.source || "backend")), "</p>",
           "</article>",
           '<div class="task-grid">', metricCards, "</div>"
         ].join("");
@@ -594,17 +846,21 @@
         "<h3>M&eacute;tricas por bloco</h3>",
         '<div class="task-grid">', byBlockHtml, "</div>",
         normativeHtml,
-        '<article class="result-card">',
-        "<h3>Legenda das medidas</h3>",
-        "<p><strong>Acur&aacute;cia total (%):</strong> propor&ccedil;&atilde;o de respostas corretas em todos os trials.</p>",
-        "<p><strong>RT m&eacute;dio (ms):</strong> m&eacute;dia do tempo de resposta em milissegundos (acertos v&aacute;lidos ap&oacute;s limpeza).</p>",
-        "<p><strong>RT mediano (ms):</strong> valor central do tempo de resposta, menos sens&iacute;vel a valores extremos.</p>",
-        "<p><strong>RT DP (ms):</strong> desvio-padr&atilde;o dos tempos de resposta, indicando variabilidade intraindiv&iacute;duo.</p>",
-        "<p><strong>RT m&eacute;dio trimado (ms):</strong> m&eacute;dia com corte de extremos para robustez psicom&eacute;trica.</p>",
-        "<p><strong>Interfer&ecirc;ncia Stroop (ms):</strong> diferen&ccedil;a entre RT m&eacute;dio do bloco incongruente e do bloco controle (B3 - B2).</p>",
-        "<p><strong>z-score:</strong> dist&acirc;ncia do valor bruto em unidades de desvio-padr&atilde;o no estrato normativo.</p>",
-        "<p><strong>Percentil:</strong> posi&ccedil;&atilde;o relativa do participante no estrato (0 a 100).</p>",
-        "<p><strong>T-score:</strong> escore padronizado calculado como 50 + 10 x z.</p>",
+        '<article class="result-card" style="text-align:left;">',
+        "<h3>Guia de Interpreta&ccedil;&atilde;o dos Resultados (Stroop Test)</h3>",
+        "<h4>1. Indicadores de Qualidade e Desempenho</h4>",
+        "<p><strong>Acur&aacute;cia Total (%):</strong> Reflete a precis&atilde;o da tarefa. Em testes de tempo de rea&ccedil;&atilde;o, uma acur&aacute;cia muito baixa pode sugerir que o participante n&atilde;o compreendeu as instru&ccedil;&otilde;es ou respondeu ao acaso, invalidando as m&eacute;tricas de tempo.</p>",
+        "<p><strong>RT M&eacute;dio Trimado (ms):</strong> &Eacute; a m&eacute;dia calculada ap&oacute;s a remo&ccedil;&atilde;o de outliers (ex: 5% das respostas mais lentas e mais r&aacute;pidas). Pedagogicamente, usamos essa medida para obter uma estimativa mais robusta do desempenho real, minimizando o ru&iacute;do de distra&ccedil;&otilde;es moment&acirc;neas.</p>",
+        "<h4>2. Din&acirc;mica do Tempo de Resposta (RT)</h4>",
+        "<p><strong>M&eacute;dia vs. Mediana (ms):</strong> Enquanto a M&eacute;dia &eacute; a tend&ecirc;ncia central cl&aacute;ssica, a Mediana representa o valor central exato da amostra. Se houver grande diferen&ccedil;a entre elas, indica que a distribui&ccedil;&atilde;o de tempo do aluno foi assim&eacute;trica (presen&ccedil;a de respostas muito lentas).</p>",
+        "<p><strong>Desvio-Padr&atilde;o (DP):</strong> Indica a variabilidade intraindiv&iacute;duo. Valores altos sugerem instabilidade no controle atencional ao longo do teste; valores baixos sugerem maior consist&ecirc;ncia na execu&ccedil;&atilde;o.</p>",
+        "<h4>3. O Efeito de Interfer&ecirc;ncia (O Cora&ccedil;&atilde;o do Teste)</h4>",
+        "<p><strong>Efeito Stroop (Interfer&ecirc;ncia):</strong> Calculado pela diferen&ccedil;a entre o RT do bloco 3 incongruente e do bloco 2. Representa o custo cognitivo adicional para inibir a leitura autom&aacute;tica da palavra e focar apenas na cor. &Eacute; a medida experimental que isola a fun&ccedil;&atilde;o executiva de controle inibit&oacute;rio.</p>",
+        "<h4>4. Escores Padronizados (Interpreta&ccedil;&atilde;o Normativa)</h4>",
+        "<p>Para entender onde o aluno se posiciona em rela&ccedil;&atilde;o a uma popula&ccedil;&atilde;o de refer&ecirc;ncia:</p>",
+        "<p><strong>z-score:</strong> Indica quantos desvios-padr&atilde;o o resultado est&aacute; acima ou abaixo da m&eacute;dia do grupo. F&oacute;rmula: <strong>z = (x - &mu;) / &sigma;</strong>.</p>",
+        "<p><strong>T-score:</strong> Uma transforma&ccedil;&atilde;o do z-score para facilitar a leitura, evitando n&uacute;meros negativos e decimais. F&oacute;rmula: <strong>T = 50 + 10z</strong>.</p>",
+        "<p><strong>Percentil:</strong> Indica a porcentagem de pessoas que pontuaram igual ou abaixo do aluno. Um percentil 75 significa que o desempenho foi superior a 75% da amostra normativa.</p>",
         "</article>",
         '<article class="result-card" style="text-align:left;">',
         "<h3>Refer&ecirc;ncias bibliogr&aacute;ficas</h3>",
@@ -627,7 +883,10 @@
     }
   });
 
+  jsPsych.data.addProperties(deviceMeta);
+
   const timeline = [];
+  const practiceTrials = createPracticeTrials();
   const blockOne = createBlockOneTrials();
   const blockTwo = createBlockTwoTrials();
   const blockThree = createBlockThreeTrials();
@@ -664,9 +923,16 @@
   ));
 
   timeline.push(...makeBlockTimeline(
+    practiceTrials,
+    "Bloco de Pr&aacute;tica",
+    "<p>Este bloco &eacute; apenas para treinar o mapeamento de teclas. Esses ensaios n&atilde;o entram na an&aacute;lise principal.</p><p>Pressione ESPA&Ccedil;O para iniciar.</p>",
+    { isPractice: true }
+  ));
+
+  timeline.push(...makeBlockTimeline(
     blockOne,
     "Bloco 1 de 3",
-    "<p>Neste bloco, os est&iacute;mulos s&atilde;o c&iacute;rculos coloridos. Responda &agrave; cor apresentada.</p><p>Objetivo: estabilizar velocidade e acur&aacute;cia no mapeamento de teclas.</p><p>Pressione ESPA&Ccedil;O para iniciar.</p>"
+    "<p>Neste bloco, os est&iacute;mulos s&atilde;o c&iacute;rculos coloridos. Responda &agrave; cor apresentada.</p><p>Pressione ESPA&Ccedil;O para iniciar.</p>"
   ));
 
   timeline.push(...makeBlockTimeline(
@@ -678,7 +944,7 @@
   timeline.push(...makeBlockTimeline(
     blockThree,
     "Bloco 3 de 3",
-    "<p>Neste bloco, voc&ecirc; ver&aacute; palavras de cores apresentadas em cor incongruente. Ignore o significado da palavra e responda somente &agrave; cor da tinta.</p><p>Neste bloco, o conflito tende a aumentar erros e tempo de resposta. Mantenha foco na tinta.</p><p>Pressione ESPA&Ccedil;O para iniciar.</p>"
+    "<p>Neste bloco, voc&ecirc; ver&aacute; palavras de cores apresentadas em cor incongruente. Ignore o significado da palavra e responda somente &agrave; cor da tinta.</p><p>Pressione ESPA&Ccedil;O para iniciar.</p>"
   ));
 
   timeline.push({

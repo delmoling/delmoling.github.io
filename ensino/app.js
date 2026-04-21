@@ -100,7 +100,7 @@ accessForm.addEventListener("submit", function (event) {
 
   const participantId = window.EnsinoApp.buildParticipantId(lastSurname, birthDay, motherName);
   if (!participantId) {
-    showStatus("error", "Revise sobrenome, dia de nascimento e as duas primeiras letras do primeiro nome da m&atilde;e. O sistema precisa de pelo menos 2 letras para cada parte textual e um dia entre 1 e 31.");
+    showStatus("error", "Revise o sobrenome, o dia de nascimento com dois dígitos e as duas primeiras letras do primeiro nome da mãe. O sistema precisa de pelo menos 2 letras para cada parte textual e um dia entre 1 e 31.");
     return;
   }
 

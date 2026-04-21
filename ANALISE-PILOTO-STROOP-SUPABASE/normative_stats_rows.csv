@@ -1,0 +1,19 @@
+id,protocol_version,scoring_version,age_band,schooling_band,metric_name,n,mean,sd,updated_at
+1,stroop-victoria-desktop-v1-baseline,rt-pipeline-v1,35-44,16+,accuracy_pct,3,95.8333,4.1650,2026-04-07 16:16:26.592+00
+2,stroop-victoria-desktop-v1-baseline,rt-pipeline-v1,35-44,16+,rt_mean_ms,3,655.6667,187.7933,2026-04-07 16:16:26.592+00
+3,stroop-victoria-desktop-v1-baseline,rt-pipeline-v1,35-44,16+,stroop_interference_ms,3,31.3333,79.1854,2026-04-07 16:16:26.592+00
+4,stroop-victoria-desktop-v1-baseline,rt-pipeline-v1,25-34,16+,accuracy_pct,2,96.5250,0.9829,2026-04-03 15:22:39.001+00
+5,stroop-victoria-desktop-v1-baseline,rt-pipeline-v1,25-34,16+,rt_mean_ms,2,547.0000,16.9706,2026-04-03 15:22:39.001+00
+6,stroop-victoria-desktop-v1-baseline,rt-pipeline-v1,25-34,16+,stroop_interference_ms,2,30.5000,47.3762,2026-04-03 15:22:39.001+00
+10,stroop-victoria-desktop-v1-baseline,rt-pipeline-v1,55+,12-15,accuracy_pct,2,86.8050,6.8801,2026-04-03 18:39:01.448+00
+11,stroop-victoria-desktop-v1-baseline,rt-pipeline-v1,55+,12-15,rt_mean_ms,2,1509.0000,521.8448,2026-04-03 18:39:01.448+00
+12,stroop-victoria-desktop-v1-baseline,rt-pipeline-v1,55+,12-15,stroop_interference_ms,2,76.0000,366.2813,2026-04-03 18:39:01.448+00
+13,stroop-victoria-desktop-v1-baseline,rt-pipeline-v1,55+,16+,accuracy_pct,3,87.5000,8.6709,2026-04-11 20:14:55.356+00
+14,stroop-victoria-desktop-v1-baseline,rt-pipeline-v1,55+,16+,rt_mean_ms,3,1452.0000,187.8404,2026-04-11 20:14:55.356+00
+15,stroop-victoria-desktop-v1-baseline,rt-pipeline-v1,55+,16+,stroop_interference_ms,3,75.0000,70.1926,2026-04-11 20:14:55.356+00
+22,stroop-victoria-desktop-v1-baseline,rt-pipeline-v1,25-34,ate-11,accuracy_pct,1,98.6100,0.0000,2026-04-06 19:56:56.724+00
+23,stroop-victoria-desktop-v1-baseline,rt-pipeline-v1,25-34,ate-11,rt_mean_ms,1,781.0000,0.0000,2026-04-06 19:56:56.724+00
+24,stroop-victoria-desktop-v1-baseline,rt-pipeline-v1,25-34,ate-11,stroop_interference_ms,1,238.0000,0.0000,2026-04-06 19:56:56.724+00
+31,stroop-victoria-desktop-v1.1-instructions,rt-pipeline-v1,25-34,16+,accuracy_pct,1,93.0600,0.0000,2026-04-21 00:06:01.819+00
+32,stroop-victoria-desktop-v1.1-instructions,rt-pipeline-v1,25-34,16+,rt_mean_ms,1,662.0000,0.0000,2026-04-21 00:06:01.819+00
+33,stroop-victoria-desktop-v1.1-instructions,rt-pipeline-v1,25-34,16+,stroop_interference_ms,1,142.0000,0.0000,2026-04-21 00:06:01.819+00
